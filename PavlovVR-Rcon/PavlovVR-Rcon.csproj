@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>.net6</TargetFramework>
+		<RootNamespace>PavlovVR_Rcon</RootNamespace>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+		<Title>Pavlov VR RCON library</Title>
+		<Authors>RainOrigami</Authors>
+		<Description>A library to interface with Pavlov VR servers, execute RCON commands and process their replies.</Description>
+		<PackageProjectUrl>https://github.com/Longoon12000/PavlovVR-Rcon</PackageProjectUrl>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<RepositoryUrl>https://github.com/Longoon12000/PavlovVR-Rcon</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<PackageTags>rcon;gaming;pavlov;vr;server</PackageTags>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<None Include="..\README.md">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+	</ItemGroup>
+
+</Project>
