@@ -4,7 +4,7 @@ namespace PavlovVR_Rcon.Models.Commands;
 
 public class ShownametagsCommand : BaseCommand<ShownametagsReply>
 {
-    public ShownametagsCommand(bool showNameTags) : base("Shownametags")
+    public ShownametagsCommand(bool showNameTags) : base("ShowNametags")
     {
         this.addParameter(showNameTags ? "True" : "False");
     }
