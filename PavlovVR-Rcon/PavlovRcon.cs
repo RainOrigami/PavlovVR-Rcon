@@ -183,7 +183,7 @@ public class PavlovRcon : IDisposable
             throw new UnexpectedRconResponseException(this, jsonBlock.ToString(), ex);
         }
 
-        if (reply == null || reply.Command != command)
+        if (reply == null || !string.Equals(reply.Command, command, StringComparison.CurrentCultureIgnoreCase))
         {
             throw new UnexpectedRconResponseException(this, jsonBlock.ToString());
         }
