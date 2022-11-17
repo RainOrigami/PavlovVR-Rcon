@@ -1,6 +1,6 @@
 ﻿namespace PavlovVR_Rcon.Models.Replies;
 
-public abstract class BaseReply
+public class BaseReply
 {
     public bool Successful { get; init; }
     public string Command { get; init; }
