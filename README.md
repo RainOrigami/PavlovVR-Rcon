@@ -3,6 +3,8 @@ A library to interface with Pavlov VR servers, execute RCON commands and process
 
 PCVR only, Shack is not supported.
 
+Available on NuGet: https://www.nuget.org/packages/PavlovVR-Rcon/
+
 # Usage
 
 ## Connecting
