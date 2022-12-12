@@ -49,9 +49,8 @@ public class PavlovRcon : IDisposable
             {
                 await this.socket.DisconnectAsync(true, new CancellationTokenSource(500).Token);
             }
-            catch (Exception ex)
+            catch
             {
-                Console.WriteLine(ex.Message);
             }
         }
 
