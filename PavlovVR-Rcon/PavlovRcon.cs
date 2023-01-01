@@ -194,60 +194,9 @@ public class PavlovRcon : IDisposable
 
     private static bool checkFullJsonBlock(string jsonBlock)
     {
-        int openBracesCount = 0;
-        bool rootBlockOpened = false;
-        bool rootBlockClosed = false;
+        string[] jsonBlockLines = jsonBlock.Trim(' ', '\n', '\r').Split('\r', '\n');
+        return jsonBlockLines.First() == "{" && jsonBlockLines.Last() == "}";
+    }
 
-        for (int i = 0; i < jsonBlock.Length; i++)
-        {
-            switch (jsonBlock[i])
-            {
-                case '{':
-                    if (rootBlockClosed)
-                    {
-                        return false;
-                    }
-
-                    if (i > 0 && jsonBlock[i - 1] == '\\')
-                    {
-                        continue;
-                    }
-
-                    rootBlockOpened = true;
-
-                    openBracesCount++;
-                    break;
-                case '}':
-                    if (rootBlockClosed)
-                    {
-                        return false;
-                    }
-
-                    if (i > 0 && jsonBlock[i - 1] == '\\')
-                    {
-                        continue;
-                    }
-
-                    openBracesCount--;
-
-                    switch (openBracesCount)
-                    {
-                        case 0:
-                            rootBlockClosed = true;
-                            break;
-                        case < 0:
-                            return false;
-                    }
-
-                    break;
-            }
-        }
-
-        if (!rootBlockOpened)
-        {
-            return false;
-        }
-
-        return openBracesCount == 0;
     }
 }
