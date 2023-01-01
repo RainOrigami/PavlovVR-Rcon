@@ -14,16 +14,25 @@ public class PavlovRcon : IDisposable
 {
     private const string passwordPromptText = "Password: ";
     private readonly bool forceIpv4;
+    private readonly StreamWriter? logToFile;
     private readonly string hashedPassword;
     private Socket? socket;
 
-    public PavlovRcon(string host, int port, string password, bool forceIpv4 = false)
+    public PavlovRcon(string host, int port, string password, bool forceIpv4 = false, string? logToFile = null)
     {
         this.forceIpv4 = forceIpv4;
         this.Host = host;
         this.Port = port;
 
         this.hashedPassword = Convert.ToHexString(MD5.Create().ComputeHash(Encoding.UTF8.GetBytes(password))).ToLower();
+
+        if (logToFile != null)
+        {
+            this.logToFile = new StreamWriter(new FileStream(logToFile, FileMode.Append, FileAccess.Write, FileShare.Read))
+            {
+                AutoFlush = true
+            };
+        }
     }
 
     public string Host { get; }
@@ -71,19 +80,33 @@ public class PavlovRcon : IDisposable
         Memory<char> passwordPrompt = new(new char[PavlovRcon.passwordPromptText.Length]);
 
         int promptCharsCount = await reader.ReadBlockAsync(passwordPrompt, cancellationToken);
-        if (promptCharsCount != PavlovRcon.passwordPromptText.Length || passwordPrompt.ToString() != PavlovRcon.passwordPromptText)
+        string promptText = passwordPrompt.ToString();
+        log(LogDirection.In, promptText);
+        if (promptCharsCount != PavlovRcon.passwordPromptText.Length || promptText != PavlovRcon.passwordPromptText)
         {
             throw new MissingAuthenticationPromptException(this);
         }
 
         await using StreamWriter writer = new(stream);
         await writer.WriteAsync(this.hashedPassword);
+        log(LogDirection.Out, this.hashedPassword);
         await writer.FlushAsync();
-
-        if (await reader.ReadLineAsync() != "Authenticated=1")
+        string? authenticationResponse = await reader.ReadLineAsync();
+        log(LogDirection.In, authenticationResponse);
+        if (authenticationResponse != "Authenticated=1")
         {
             throw new AuthenticationFailedException(this);
         }
+    }
+
+    private void log(LogDirection direction, string? text)
+    {
+        if (this.logToFile == null)
+        {
+            return;
+        }
+
+        this.logToFile.WriteLine($"[{DateTime.Now:yyyy-MM-dd HH:mm:ss:fff}][{direction}] {text ?? "[null]"}");
     }
 
     public async Task<string> SendTextCommand(string command, string[]? parameters = null)
@@ -113,6 +136,7 @@ public class PavlovRcon : IDisposable
         commandBuilder.Append('\n');
 
         await writer.WriteAsync(commandBuilder.ToString());
+        log(LogDirection.Out, commandBuilder.ToString());
         await writer.FlushAsync();
 
         T reply;
@@ -149,20 +173,38 @@ public class PavlovRcon : IDisposable
         StringBuilder jsonBlock = new();
         do
         {
-            cancellationToken.ThrowIfCancellationRequested();
-
-            Memory<char> buffer = new(new char[1024]);
-            int readCharCount = await reader.ReadAsync(buffer, cancellationToken);
-
-            if (readCharCount == 0 && !cancellationToken.IsCancellationRequested)
+            try
             {
-                // The C# discord is uncertain whether ReadAsync throws or returns 0 when cancelled
-                // so we will handle both
-                continue;
+                cancellationToken.ThrowIfCancellationRequested();
+            }
+            catch
+            {
+                log(LogDirection.In, jsonBlock.ToString());
+                throw;
             }
 
-            jsonBlock.Append(buffer.Slice(0, readCharCount).ToString());
+            Memory<char> buffer = new(new char[1024]);
+            try
+            {
+                int readCharCount = await reader.ReadAsync(buffer, cancellationToken);
+
+                if (readCharCount == 0 && !cancellationToken.IsCancellationRequested)
+                {
+                    // The C# discord is uncertain whether ReadAsync throws or returns 0 when cancelled
+                    // so we will handle both
+                    continue;
+                }
+
+                jsonBlock.Append(buffer[..readCharCount].ToString());
+            }
+            catch
+            {
+                log(LogDirection.In, jsonBlock.ToString());
+                throw;
+            }
         } while (!cancellationToken.IsCancellationRequested && !PavlovRcon.checkFullJsonBlock(jsonBlock.ToString()) && this.socket.Connected);
+
+        log(LogDirection.In, jsonBlock.ToString());
 
         cancellationToken.ThrowIfCancellationRequested();
 
@@ -198,5 +240,9 @@ public class PavlovRcon : IDisposable
         return jsonBlockLines.First() == "{" && jsonBlockLines.Last() == "}";
     }
 
+    private enum LogDirection
+    {
+        In,
+        Out
     }
 }
