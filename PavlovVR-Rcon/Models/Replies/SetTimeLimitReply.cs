@@ -2,5 +2,7 @@
 {
     public class SetTimeLimitReply : BaseReply
     {
+        public bool SetTimeLimit { get; init; }
+        public int TimeLimit { get; init; }
     }
 }

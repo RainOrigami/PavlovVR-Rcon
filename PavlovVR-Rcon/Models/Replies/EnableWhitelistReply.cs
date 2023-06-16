@@ -2,5 +2,7 @@
 {
     public class EnableWhitelistReply : BaseReply
     {
+        public bool WhitelistState { get; init; }
+        public bool EnableWhitelist { get; init; }
     }
 }

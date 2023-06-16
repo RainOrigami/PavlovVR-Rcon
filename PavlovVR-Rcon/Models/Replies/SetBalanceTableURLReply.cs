@@ -2,5 +2,7 @@
 {
     public class SetBalanceTableURLReply : BaseReply
     {
+        public string GithubURL { get; init; } = string.Empty;
+        public bool SetBalanceTableURL { get; init; }
     }
 }

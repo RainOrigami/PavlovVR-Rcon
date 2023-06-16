@@ -2,5 +2,7 @@
 {
     public class EnableCompModeReply : BaseReply
     {
+        public bool CompModeState { get; init; }
+        public bool EnableCompMode { get; init; }
     }
 }
