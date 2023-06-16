@@ -9,4 +9,5 @@ public class PlayerDetail
     public bool Dead { get; init; }
     public int TeamId { get; init; }
     public int Score { get; init; }
+    public float Ping { get; init; }
 }
