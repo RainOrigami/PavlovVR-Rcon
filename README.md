@@ -81,7 +81,7 @@ Note: While the server is switching maps, commands will fail since the server ca
 
 # Available commands
 
-Except for Help and Disconnect, all commands from http://wiki.pavlov-vr.com/index.php?title=Dedicated_server#Rcon_Overview_and_Commands are available.
+Except for Help and Disconnect, all commands from http://pavlovwiki.com/index.php/Rcon_Overview_and_Commands are available.
 
 To quote the Pavlov VR wiki:
 
