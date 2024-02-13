@@ -2,7 +2,7 @@
 
 public class Player
 {
-    public ulong? UniqueId { get; init; } = null;
+    public string UniqueId { get; init; } = string.Empty;
 
     public string Username { get; init; } = string.Empty;
 }
