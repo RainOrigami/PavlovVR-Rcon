@@ -236,8 +236,7 @@ public class PavlovRcon : IDisposable
 
     private static bool checkFullJsonBlock(string jsonBlock)
     {
-        string[] jsonBlockLines = jsonBlock.Trim(' ', '\n', '\r').Split('\r', '\n');
-        return jsonBlockLines.First() == "{" && jsonBlockLines.Last() == "}";
+        return jsonBlock.EndsWith("\n}\r\n");
     }
 
     private enum LogDirection
