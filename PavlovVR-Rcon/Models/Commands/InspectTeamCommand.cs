@@ -4,8 +4,9 @@ namespace PavlovVR_Rcon.Models.Commands
 {
     public class InspectTeamCommand : BaseCommand<InspectTeamReply>
     {
-        public InspectTeamCommand() : base("InspectTeam")
+        public InspectTeamCommand(int teamId) : base("InspectTeam")
         {
+            this.addParameter(teamId.ToString());
         }
     }
 }
