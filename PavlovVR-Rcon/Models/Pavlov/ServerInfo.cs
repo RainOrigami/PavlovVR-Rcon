@@ -3,7 +3,10 @@
 public class ServerInfo
 {
     public string MapLabel { get; init; } = string.Empty;
+    public string MapName { get; init; } = string.Empty;
     public string GameMode { get; init; } = string.Empty;
+    public string GameModeName { get; init; } = string.Empty;
+    public string[] Mods { get; init; } = Array.Empty<string>();
     public string ServerName { get; init; } = string.Empty;
     public bool Teams { get; init; }
     public int? Team0Score { get; init; }
